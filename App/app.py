@@ -58,8 +58,8 @@ import os
 
 
 # Import your existing functions
-from ingest.ingest import collect_user_input
-from file_reader.image_scanner import PdfReader
+from Ingest.ingest import collect_user_input
+from FileReader.image_scanner import PdfReader
 # Replace the imports above if your actual module paths differ.
 
 
