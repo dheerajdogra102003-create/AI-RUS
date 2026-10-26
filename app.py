@@ -152,6 +152,7 @@ if st.button("🔍 Scan files", type="primary",
                 try:
                     with st.spinner(f"Scanning {Path(image_path).name}..."):
                         extracted_text = PdfReader(image_path)
+                        st.write("DEBUG:", repr(extracted_text), type(extracted_text))
 
                     if extracted_text:
                         st.text_area(
@@ -162,8 +163,7 @@ if st.button("🔍 Scan files", type="primary",
                         )
                     else:
                         st.warning(
-                            "Your current PdfReader function does not "
-                            "return text yet. See the note below."
+                            "No text detected in this image."
                         )
 
                 except Exception as e:

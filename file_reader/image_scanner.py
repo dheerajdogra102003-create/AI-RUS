@@ -43,7 +43,10 @@ def PdfReader(image_path:str) ->str:
 
     
     print("_____________________Filtered Text________________________\n")
+    
     extracted_text="\n".join(detected_text)
+    print(extracted_text)
+
     return extracted_text
     
 
