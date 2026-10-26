@@ -1,47 +1,31 @@
 
 
-# ```text
-# medical-timeline/
-# ├── app.py                # ├── requirements.txt               # Python dependencies
-# ├── .gitignore                     # Excludes local data, uploads, and secrets
-# ├── models/
-# │   └── event.py                   # Timeline event data structure
-# ├── extractors/
-# │   ├── pdf_reader.py              # Digital PDF extraction and page rendering
-# │   └── image_reader.py            # PaddleOCR for images and scanned pages
-# ├── processing/
-# │   ├── clinical_events.py         # Medication, disease, and symptom candidates
-# │   ├── dates.py                   # Date detection and normalization
-# │   └── timeline.py                # Review filtering and chronological ordering
-# ├── services/
-# │   ├── ingestion.py               # Coordinates upload and extraction pipeline
-# │   └── export.py                  # CSV generation
-# └── data/                           # Local runtime data; do not commit                # Optional temporary uploaded files
+# # ```text
+# # medical-timeline/
+# # ├── app.py                # ├── requirements.txt               # Python dependencies
+# # ├── .gitignore                     # Excludes local data, uploads, and secrets
+# # ├── models/
+# # │   └── event.py                   # Timeline event data structure
+# # ├── extractors/
+# # │   ├── pdf_reader.py              # Digital PDF extraction and page rendering
+# # │   └── image_reader.py            # PaddleOCR for images and scanned pages
+# # ├── processing/
+# # │   ├── clinical_events.py         # Medication, disease, and symptom candidates
+# # │   ├── dates.py                   # Date detection and normalization
+# # │   └── timeline.py                # Review filtering and chronological ordering
+# # ├── services/
+# # │   ├── ingestion.py               # Coordinates upload and extraction pipeline
+# # │   └── export.py                  # CSV generation
+# # └── data/                           # Local runtime data; do not commit                # Optional temporary uploaded files
 
 
 
-# from file_reader.image_scanner import PdfReader
-# from ingest.ingest import collect_user_input
 
-# ls=[]
-# input_paths=[
-#     r"D:\AI-RUS\images (2).jpg",
-#     r"D:\AI-RUS\images (1).jpg",
-#     r"D:\AI-RUS\images (3).jpg",
-#     r"D:\AI-RUS\images.jpg",
-#     r"D:\AI-RUS\sample_prescription.webp",
-#     r"D:\AI-RUS\screen-13.png"
-# ]
-# path_pdf,image_path=collect_user_input(input_paths)
-# for path in path_pdf:
-#     text=PdfReader(path)
-#     ls.append(f"pdf {path} : {text}\n\n")
 
-# for path in image_path:
-#     text=PdfReader(path)
-#     ls.append(f"image {path} : {text}\n\n")
 
-# print(ls)
+
+
+
 
 
 
@@ -55,18 +39,16 @@ import sys
 import streamlit as st
 from pathlib import Path
 import tempfile
-import os
 
-# Ensure the root project directory is on sys.path
-ROOT_DIR = Path(__file__).resolve().parent.parent
+# Project root: assuming app.py is inside D:\AI-RUS
+ROOT_DIR = Path(__file__).resolve().parent
+
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-# Import your existing functions
 from Ingest.ingest import collect_user_input
 from FileReader.image_scanner import PdfReader
 from LLM.llm import llmReportGenerator
-# Replace the imports above if your actual module paths differ.
 
 
 st.set_page_config(
@@ -78,7 +60,7 @@ st.set_page_config(
 st.title("AI Powered - Read User Summary")
 st.caption("Upload medical reports, prescriptions, PDFs and images.")
 
-# Store uploaded files in Streamlit session state
+# Store uploaded files
 if "uploaded_files" not in st.session_state:
     st.session_state.uploaded_files = []
 
@@ -90,19 +72,19 @@ new_files = st.file_uploader(
     key="file_uploader"
 )
 
-# Keep uploaded files staged until Scan is pressed
+# Stage uploaded files
 if new_files:
-    existing_names = {
+    existing = {
         (f.name, f.size)
         for f in st.session_state.uploaded_files
     }
 
     for file in new_files:
-        if (file.name, file.size) not in existing_names:
+        if (file.name, file.size) not in existing:
             st.session_state.uploaded_files.append(file)
-            existing_names.add((file.name, file.size))
+            existing.add((file.name, file.size))
 
-# Display staged attachments
+# Display attachments
 st.subheader("📎 Attached files")
 
 if st.session_state.uploaded_files:
@@ -116,81 +98,136 @@ if st.session_state.uploaded_files:
             if st.button("Remove", key=f"remove_{i}"):
                 st.session_state.uploaded_files.pop(i)
                 st.rerun()
-else:
-    st.info("No files attached yet.")
 
-# Clear all attachments
-if st.session_state.uploaded_files:
     if st.button("🗑️ Clear all files"):
         st.session_state.uploaded_files = []
         st.rerun()
+else:
+    st.info("No files attached yet.")
 
 st.divider()
 
-# Process only after the user clicks Scan
-if st.button("🔍 Scan files", type="primary",
-             disabled=not st.session_state.uploaded_files):
+# Scan all files and generate ONE combined report
+if st.button(
+    "🔍 Scan Files & Generate Combined Report",
+    type="primary",
+    disabled=not st.session_state.uploaded_files
+):
 
-    pdf_paths = []
-    image_paths = []
+    # Fresh content for every scan
+    all_extracted_text = []
+    combined_text_file = None
 
     with tempfile.TemporaryDirectory() as temp_dir:
+        temp_path = Path(temp_dir)
+
         try:
-            # Save staged uploads temporarily
-            for file in st.session_state.uploaded_files:
-                file_path = Path(temp_dir) / Path(file.name).name
+            all_paths = []
 
-                file_path.write_bytes(file.getvalue())
+            # Save uploaded files temporarily
+            for i, file in enumerate(st.session_state.uploaded_files):
+                saved_path = temp_path / f"{i}_{Path(file.name).name}"
+                saved_path.write_bytes(file.getvalue())
+                all_paths.append(saved_path)
 
-            # Classify PDFs and images using your existing function
-            all_paths = [
-                Path(temp_dir) / Path(f.name).name
-                for f in st.session_state.uploaded_files
-            ]
-
+            # Classify files using your existing function
             pdf_paths, image_paths = collect_user_input(all_paths)
 
-            st.subheader("📝 Scanning results")
+            st.subheader("📝 Extracted Text")
 
-            # Scan images using your existing OCR function
+            # Process all images
             for image_path in image_paths:
-                st.markdown(f"### 🖼️ {Path(image_path).name}")
+                filename = Path(image_path).name
 
                 try:
-                    with st.spinner(f"Scanning {Path(image_path).name}..."):
-                        extracted_text = PdfReader(image_path)
-                        # st.write("DEBUG:", repr(extracted_text), type(extracted_text))
+                    with st.spinner(f"Extracting text from {filename}..."):
+                        text = PdfReader(str(image_path))
 
-                    if extracted_text:
-                        st.text_area(
-                            "Extracted text",
-                            value=extracted_text,
-                            height=250,
-                            key=f"result_{Path(image_path).name}"
+                    if text and text.strip():
+                        # Keep the source filename with the extracted text
+                        file_text = (
+                            f"\n\n{'=' * 60}\n"
+                            f"SOURCE FILE: {filename}\n"
+                            f"{'=' * 60}\n"
+                            f"{text.strip()}\n"
                         )
 
+                        all_extracted_text.append(file_text)
 
-                        # st.text_area("Extracted OCR Text", value=extracted_text, height=200)
-                        # Send to Gemini LLM:
-                        with st.spinner("Generating Medical Timeline with AI..."):
-                            timeline = llmReportGenerator(extracted_text)
-                            st.markdown("### 📋 Medical History Timeline")
-                            st.markdown(timeline)
+                        # Show text extracted from this file
+                        # with st.expander(f"📄 {filename}"):
+                        #     st.text_area(
+                        #         "Extracted text",
+                        #         value=text,
+                        #         height=250,
+                        #         key=f"text_{filename}"
+                        #     )
 
-                    
                     else:
-                        st.warning(
-                            "No text detected in this image."
-                        )
+                        st.warning(f"No text detected in {filename}.")
 
                 except Exception as e:
-                    st.error(f"Image scanning failed: {e}")
+                    st.error(f"Image scanning failed for {filename}: {e}")
 
-            # PDFs need your existing PDF reader integration
+            # PDFs are classified but no PDF reader is connected yet
             for pdf_path in pdf_paths:
                 st.warning(
                     f"PDF detected: {Path(pdf_path).name}. "
-                    "Connect your PDF-reading function here."
+                    "PDF text extraction is not connected. "
+                    "This PDF will not be included in the report."
+                )
+
+            # Combine all successful extractions into one string
+            combined_text = "\n".join(all_extracted_text).strip()
+
+            if not combined_text:
+                st.error("No text was extracted. Cannot generate a report.")
+
+            else:
+                # Save all extracted text into one file
+                combined_text_file = temp_path / "combined_extracted_text.txt"
+                combined_text_file.write_text(
+                    combined_text,
+                    encoding="utf-8"
+                )
+
+                st.success(
+                    f"Combined text created from "
+                    f"{len(all_extracted_text)} file(s)."
+                )
+
+                # Preview the complete combined text
+                # with st.expander("📚 View complete combined text"):
+                #     st.text_area(
+                #         "All extracted text",
+                #         value=combined_text,
+                #         height=350,
+                #         key="combined_text_preview"
+                #     )
+
+                # Generate one report from ALL extracted text
+                with st.spinner("Generating combined medical timeline..."):
+                    report = llmReportGenerator(combined_text)
+
+                if report.startswith("Report generation failed:"):
+                    st.error(report)
+                else:
+                    st.subheader("📋 Combined Medical History Timeline")
+                    st.markdown(report)
+
+                    # st.download_button(
+                    #     "⬇️ Download Combined Report",
+                    #     data=report,
+                    #     file_name="combined_medical_timeline.md",
+                    #     mime="text/markdown"
+                    # )
+
+                # Download the complete OCR text too
+                st.download_button(
+                    "⬇️ Download All Extracted Text",
+                    data=combined_text,
+                    file_name="combined_extracted_text.txt",
+                    mime="text/plain"
                 )
 
         except Exception as e:
