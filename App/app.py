@@ -62,6 +62,16 @@ from ingest.ingest import collect_user_input
 from file_reader.image_scanner import PdfReader
 # Replace the imports above if your actual module paths differ.
 
+
+
+
+# import inspect
+# st.write("Scanner file:", inspect.getfile(PdfReader))
+# st.code(inspect.getsource(PdfReader))
+
+
+
+
 st.set_page_config(
     page_title="AI-RUS Document Scanner",
     page_icon="📄",
@@ -152,7 +162,7 @@ if st.button("🔍 Scan files", type="primary",
                 try:
                     with st.spinner(f"Scanning {Path(image_path).name}..."):
                         extracted_text = PdfReader(image_path)
-                        st.write("DEBUG:", repr(extracted_text), type(extracted_text))
+                        # st.write("DEBUG:", repr(extracted_text), type(extracted_text))
 
                     if extracted_text:
                         st.text_area(

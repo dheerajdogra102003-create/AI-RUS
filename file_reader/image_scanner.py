@@ -1,6 +1,6 @@
 
 # from file_reader import pdf_reader
-from app import extracted_text
+# from app import extracted_text
 import easyocr
 import cv2
 # import matplotlib.pyplot as plt
