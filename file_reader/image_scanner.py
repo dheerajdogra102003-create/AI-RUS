@@ -1,5 +1,6 @@
 
 # from file_reader import pdf_reader
+from app import extracted_text
 import easyocr
 import cv2
 # import matplotlib.pyplot as plt
@@ -40,8 +41,11 @@ def PdfReader(image_path:str) ->str:
         if confidence >= 0.25:
             detected_text.append(text)
 
-    print("\n--- Filtered Text ---\n")
-    print("\n".join(detected_text))
+    
+    print("_____________________Filtered Text________________________\n")
+    extracted_text="\n".join(detected_text)
+    return extracted_text
+    
 
     # # 7. Display the image
     # plt.figure(figsize=(12, 8))
