@@ -1,0 +1,47 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+*.pyd
+*.dll
+
+# Virtual Environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OCR / Model caches & weights (>100MB)
+.cache/
+*.pth
+*.pt
+*.onnx
+*.bin
+*.weights
+checkpoints/
+models/
+
+# Logs and temporary files
+*.log
+tmp/
+temp/
+
+# OS generated files
+.DS_Store
+Thumbs.db

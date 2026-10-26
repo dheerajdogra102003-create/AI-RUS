@@ -1,0 +1,11 @@
+PyMuPDF
+PaddleOCR
+Pillow
+numpy
+pandas
+
+
+streamlit
+pymupdf
+
+python-dateutil
