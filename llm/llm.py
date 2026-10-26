@@ -1,11 +1,13 @@
-GOOGLE_API_KEY="AQ.Ab8RN6JvkULd9fYw3mHLFzA7j1Tgt3Uf5RxCg4YwCJekr_IoTw"
-
-
+# GOOGLE_API_KEY="AQ.Ab8RN6JvkULd9fYw3mHLFzA7j1Tgt3Uf5RxCg4YwCJekr_IoTw"
+import os
+from google import genai
+from dotenv import load_dotenv
+load_dotenv()
 
 from App.app import extracted_text
 
-import os
-from google import genai
+
+GOOGLE_API_KEY=os.getenv("GOOGLE_API_KEY")
 
 def llmReportGenerator(extracted_text: str) -> str:
     client = genai.Client(api_key=GOOGLE_API_KEY)
