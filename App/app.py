@@ -174,7 +174,7 @@ if st.button("🔍 Scan files", type="primary",
                         )
 
 
-                        st.text_area("Extracted OCR Text", value=extracted_text, height=200)
+                        # st.text_area("Extracted OCR Text", value=extracted_text, height=200)
                         # Send to Gemini LLM:
                         with st.spinner("Generating Medical Timeline with AI..."):
                             timeline = llmReportGenerator(extracted_text)
