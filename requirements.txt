@@ -3,9 +3,7 @@ PaddleOCR
 Pillow
 numpy
 pandas
-
-
 streamlit
-pymupdf
-
 python-dateutil
+google-genai
+python-dotenv
