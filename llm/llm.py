@@ -4,7 +4,7 @@ from google import genai
 from dotenv import load_dotenv
 load_dotenv()
 
-from App.app import extracted_text
+# from App.app import extracted_text
 
 
 GOOGLE_API_KEY=os.getenv("GOOGLE_API_KEY")

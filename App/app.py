@@ -60,6 +60,7 @@ import os
 # Import your existing functions
 from Ingest.ingest import collect_user_input
 from FileReader.image_scanner import PdfReader
+from LLM.llm import llmReportGenerator
 # Replace the imports above if your actual module paths differ.
 
 
@@ -171,6 +172,16 @@ if st.button("🔍 Scan files", type="primary",
                             height=250,
                             key=f"result_{Path(image_path).name}"
                         )
+
+
+                        st.text_area("Extracted OCR Text", value=extracted_text, height=200)
+                        # Send to Gemini LLM:
+                        with st.spinner("Generating Medical Timeline with AI..."):
+                            timeline = llmReportGenerator(extracted_text)
+                            st.markdown("### 📋 Medical History Timeline")
+                            st.markdown(timeline)
+
+                    
                     else:
                         st.warning(
                             "No text detected in this image."
