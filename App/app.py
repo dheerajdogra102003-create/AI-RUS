@@ -51,26 +51,22 @@
 
 
 
+import sys
 import streamlit as st
 from pathlib import Path
 import tempfile
 import os
 
+# Ensure the root project directory is on sys.path
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
 # Import your existing functions
 from Ingest.ingest import collect_user_input
 from FileReader.image_scanner import PdfReader
 from LLM.llm import llmReportGenerator
 # Replace the imports above if your actual module paths differ.
-
-
-
-
-# import inspect
-# st.write("Scanner file:", inspect.getfile(PdfReader))
-# st.code(inspect.getsource(PdfReader))
-
-
 
 
 st.set_page_config(

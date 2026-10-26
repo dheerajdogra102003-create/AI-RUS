@@ -4,10 +4,40 @@ from google import genai
 from dotenv import load_dotenv
 load_dotenv()
 
-# from App.app import extracted_text
 
+
+
+
+
+
+# import os
+from pathlib import Path
+# from dotenv import load_dotenv
+
+# env_path = Path(__file__).resolve().parent.parent / ".env"
+# load_dotenv(env_path, override=True)
+
+# api_key = os.getenv("GOOGLE_API_KEY", "").strip()
+
+# print("Key loaded:", bool(api_key))
+# print("Key prefix:", api_key[:3] if api_key else "Missing")
+# print("Key length:", len(api_key))
 
 GOOGLE_API_KEY=os.getenv("GOOGLE_API_KEY")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def llmReportGenerator(extracted_text: str) -> str:
     client = genai.Client(api_key=GOOGLE_API_KEY)
@@ -107,23 +137,58 @@ SOURCE TEXT:
 Return only the formatted report.
 """
 
-    if not extracted_text or not extracted_text.strip():
-        return "No extracted medical text was provided."
+        
+    models = [
+        "gemini-2.5-flash",
+        "gemini-2.5-flash-lite",
+    ]
 
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt,
-            config={
-                "temperature": 0.1
-            }
-        )
+    for model in models:
+        try:
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt,
+                config={"temperature": 0.1},
+            )
 
-        if not response.text:
-            return "The model returned no report. Please try again."
+            if response.text:
+                return response.text
 
-        return response.text
+        except Exception as e:
+            if "503" not in str(e):
+                return f"Report generation failed: {e}"
 
-    except Exception as e:
-        return f"Report generation failed: {e}"
+    
 
+
+
+
+
+
+
+
+
+
+    # import os
+    # from pathlib import Path
+    # from dotenv import load_dotenv
+    # from google import genai
+
+    # load_dotenv(
+    #     Path(__file__).resolve().parent.parent / ".env",
+    #     override=True
+    # )
+
+    # api_key = os.getenv("GOOGLE_API_KEY", "").strip()
+
+    # if not api_key:
+    #     raise ValueError("GOOGLE_API_KEY is missing from .env")
+
+    # client = genai.Client(api_key=api_key)
+
+    # response = client.models.generate_content(
+    #     model="gemini-2.5-flash",
+    #     contents="Reply with: Gemini API connection successful."
+    # )
+
+    # print(response.text)
