@@ -17,20 +17,3 @@ def collect_user_input(file_paths:list[str|Path]):
             raise ValueError(f"Unrecognised file type {extension} for {path}")
     
     return pdf_files,image_files    
-
-
-
-# files = [
-#     r"C:\reports\visit.pdf",
-#     r"C:\reports\scan.png",
-#     r"C:\reports\photo.jpg",
-# ]
-# x,y=collect_user_input(files)
-# # print(x)
-
-# # print(y)
-
-
-# for i in y:
-#     print(i)
-

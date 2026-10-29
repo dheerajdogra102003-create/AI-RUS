@@ -258,7 +258,7 @@ if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 # Import existing functions
-from Ingest.ingest import collect_user_input
+from Fileingest.ingest import collect_user_input
 from FileReader.image_scanner import scan_image
 from FileReader.pdf_reader import read_pdf
 from LLM.llm import llmReportGenerator
