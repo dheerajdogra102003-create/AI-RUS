@@ -8,7 +8,7 @@ from pathlib import Path
 
 # 1. Set the path of your medicine image
 # image_path = r"D:\AI-RUS\sample_prescription.webp"
-def PdfReader(image_path:str) ->str:
+def scan_image(image_path:str) ->str:
         
     # 2. Check whether the image exists
     if not Path(image_path).exists():
