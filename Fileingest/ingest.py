@@ -1,5 +1,6 @@
 # from PIL import GimpGradientFile
 from pathlib import Path
+
 def collect_user_input(file_paths:list[str|Path]):
     pdf_files = []
     image_files = []

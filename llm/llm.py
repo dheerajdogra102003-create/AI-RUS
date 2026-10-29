@@ -356,8 +356,10 @@ def llmReportGenerator(extracted_text: str) -> str:
     """
 
         
-    models = [     "anthropic/claude-sonnet-4",
-    "anthropic/claude-opus-4",
+    models = [     
+    # "anthropic/claude-sonnet-4",
+    # "anthropic/claude-opus-4",
+    "gemini-2.5-flash"
     ]
 
     for model in models:
@@ -381,7 +383,7 @@ def llmReportGenerator(extracted_text: str) -> str:
 
 
 
-
+# print(llmReportGenerat))
 
 
 

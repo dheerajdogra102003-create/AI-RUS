@@ -251,14 +251,18 @@ import streamlit as st
 from pathlib import Path
 import tempfile
 
-# Project root
-ROOT_DIR = Path(__file__).resolve().parent
+# Project root (d:\AI-RUS)
+ROOT_DIR = Path(__file__).resolve().parent.parent
 
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
 # Import existing functions
-from Fileingest.ingest import collect_user_input
+try:
+    from Fileingest.ingest import collect_user_input
+except ModuleNotFoundError:
+    from Ingest.ingest import collect_user_input
+
 from FileReader.image_scanner import scan_image
 from FileReader.pdf_reader import read_pdf
 from LLM.llm import llmReportGenerator

@@ -60,4 +60,7 @@ def scan_image(image_path:str) ->str:
 
 
 
-# PdfReader(image_path)
+# Backward compatibility alias
+PdfReader = scan_image
+
+# scan_image(image_path)
