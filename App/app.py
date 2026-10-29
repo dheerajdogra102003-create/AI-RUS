@@ -254,6 +254,7 @@ import tempfile
 from Fileingest.ingest import collect_user_input
 from FileReader.image_scanner import scan_image
 from FileReader.pdf_reader import read_pdf
+# pyrefly: ignore[missing-import]
 from llm.llm import llmReportGenerator
 
 # Streamlit page configuration
