@@ -238,8 +238,8 @@
 
 
 
-
-
+import sys
+from pathlib import Path
 
 
 ROOT_DIR = Path(__file__).resolve().parent
@@ -249,16 +249,8 @@ if str(ROOT_DIR) not in sys.path:
 
 
 
-import sys
 import streamlit as st
-from pathlib import Path
 import tempfile
-
-# Project root
-
-
-# Import existing functions
-# pyrefly: ignore[missing-import]
 from Fileingest.ingest import collect_user_input
 from FileReader.image_scanner import scan_image
 from FileReader.pdf_reader import read_pdf
