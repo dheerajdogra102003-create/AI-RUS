@@ -254,7 +254,7 @@ import tempfile
 from Fileingest.ingest import collect_user_input
 from FileReader.image_scanner import scan_image
 from FileReader.pdf_reader import read_pdf
-from LLM.llm import llmReportGenerator
+from llm.llm import llmReportGenerator
 
 # Streamlit page configuration
 st.set_page_config(
