@@ -7,3 +7,5 @@ streamlit
 python-dateutil
 google-genai
 python-dotenv
+easyocr
+opencv-python-headless
