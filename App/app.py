@@ -264,7 +264,6 @@ from FileReader.image_scanner import scan_image
 from FileReader.pdf_reader import read_pdf
 from LLM.llm import llmReportGenerator
 
-
 # Streamlit page configuration
 st.set_page_config(
     page_title="AI-RUS Document Scanner",
